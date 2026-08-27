@@ -4,7 +4,7 @@ I learned software the long way round: by running the operations that needed it.
 
 Construction, real estate and tourism in Colombia. Quoting jobs, chasing payments, arguing with suppliers, explaining to a customer why the number changed. Years of that teaches you something a spec never will — **which parts of a business are actually expensive**, and they are almost never the parts people try to optimise first.
 
-That's what pushed me into automation. I started with n8n, wiring together the repetitive work that was eating my week. It got me surprisingly far, and then it stopped: the moment the work needed judgement — reading what a customer actually meant, deciding what was missing, refusing to answer when the information wasn't there — no-code ran out of road. So I learned to build the systems properly.
+That's what pushed me into automation. I spent a year with n8n and off-the-shelf tools, wiring together the repetitive work that was eating the week — mine, and other people's businesses. It's where I learned to measure a process before touching it: how many hours it takes, how often it breaks, what an error actually costs. It got me surprisingly far, and then it stopped: the moment the work needed judgement — reading what a customer actually meant, deciding what was missing, refusing to answer when the information wasn't there — no-code ran out of road. So I learned to build the systems properly.
 
 Now I build AI systems for operations I'm accountable for. That accountability is the whole reason I care about verification: when a model invents a number, I'm the one who has to honour the quote. So in my systems the model talks and extracts; deterministic engines calculate; and an eval suite proves the difference before anything ships.
 
