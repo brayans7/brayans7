@@ -12,7 +12,9 @@ Now I build AI systems for real operations, where someone has to answer for the 
 
 **[oficio](https://github.com/brayans7/oficio)** — my public work, and the clearest example of how I think. A customer conversation becomes a remodeling quote under one rule: **the language model never computes a price.** It extracts what was asked for, quoting the customer verbatim as evidence for every line; a deterministic engine does the arithmetic against a versioned price book from a real construction business — one whose quotes I used to write by hand.
 
-The interesting engineering isn't the agent, it's the harness around it: 162 tests · 30 golden quotes reproduced to the cent in CI · 100 labeled conversations and 20 adversarial ones (injection, price tampering, prompt exfiltration, fabricated evidence) · a gate that fails the entire run if one line cites words the customer never said · fail-closed cost telemetry · an MCP server so other agents can use it. The demo runs with no API key.
+The interesting engineering isn't the agent, it's the harness around it: 162 tests · 30 golden quotes reproduced to the cent in CI · fail-closed cost telemetry · an MCP server so other agents can use it. The demo runs with no API key.
+
+Measured against 100 labeled conversations and 20 adversarial ones: **96.4% F1** on item identification, **98.6%** exact quantities, **25/25** unanswerable requests answered with a question instead of a number, **20/20** attacks blocked, and **zero invented values** — with four hallucination attempts caught by the validator before they could reach a price. That last pair is the whole thesis: a system that claims its model never hallucinates is a system that isn't looking. The full run costs $0.27 and anyone can reproduce it.
 
 **Running privately** — client-owned or in daily use inside the operations I work with, so the code isn't public. Happy to walk through the architecture in a call:
 
