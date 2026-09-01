@@ -8,7 +8,9 @@ That's what pushed me into automation. I spent a year with n8n and off-the-shelf
 
 Now I build AI systems for real operations, where someone has to answer for the output. That's the whole reason I care about verification: when a model invents a number, a person has to honour that quote in front of a customer. So in my systems the model talks and extracts; deterministic engines calculate; and an eval suite proves the difference before anything ships.
 
-### What I build
+---
+
+## Public work
 
 **[tau2-bench-audit](https://github.com/brayans7/tau2-bench-audit)** — independent measurements of the benchmark Anthropic, OpenAI and Google cite in their model cards. It's the clearest example of me working inside somebody else's codebase.
 
@@ -24,22 +26,36 @@ The interesting engineering isn't the agent, it's the harness around it: 162 tes
 
 Measured against 100 labeled conversations and 20 adversarial ones: **96.4% F1** on item identification, **98.6%** exact quantities, **25/25** unanswerable requests answered with a question instead of a number, **20/20** attacks blocked, and **zero invented values** — with four hallucination attempts caught by the validator before they could reach a price. That last pair is the whole thesis: a system that claims its model never hallucinates is a system that isn't looking. The full run costs $0.27 and anyone can reproduce it.
 
-**Running privately** — client-owned or in daily use inside the operations I work with, so the code isn't public. Happy to walk through the architecture in a call:
+**[workflow-pack-generator](https://github.com/brayans7/workflow-pack-generator)** — a four-stage pipeline (research → generation → critique → examples) with per-stage model routing and per-call reasoning-effort control: **30–40% measured cost saving** against a single-model baseline. 92 tests that run with no API key and no network.
 
-- An **autonomous publishing pipeline** — six agents, per-task model routing (cheap model writes, mid-tier audits, frontier model decides go/no-go), section-level checkpointing so a retry never re-pays for finished work, and a daily spend guardrail. A complete book costs about $1.10 in API.
-- An **industrial quoting platform** for a US client — LLM converses, deterministic engines compute; multi-tenant Postgres with row-level security verified at boot rather than assumed; signed customer portals; payment webhooks with timing-safe signatures and fail-closed retries; an RFQ reader evaluated with a zero-tolerance threshold for invented values.
-- A **claim-level verification platform** for Spanish-language journalism, where the unit of analysis is the atomic claim rather than the article — 336 tests, a sealed audit chain, and separation of duties so an administrator cannot sign off on their own work.
-- The **operating system of a remodeling company** — the quoting agent, the price knowledge base and hybrid retrieval that now sit underneath the day-to-day work.
+---
 
-### How I work
+## Systems running privately
+
+Client-owned or in daily use inside the operations I work with, so the code isn't public. Happy to walk through any of these architectures in a call.
+
+**Enterprise transformation engine** · deployed · ~41,900 lines · **693 test functions (1,725 assertions)** across a Python core and a hexagonal TypeScript one, with zero TODOs left in the code. Cost control is a single gate: one model router concentrates all inference, routes by task or by functional role, counts tokens, and enforces a per-client daily spend cap that blocks the call *before* making it rather than after paying for it. Agent evaluation ships with explicit release thresholds — p50/p95, reproducibility, human agreement, verbosity bias, and a decision-stability pass^k requiring identical top-1 across runs, Jaccard ≥ 0.80 and coefficient of variation ≤ 0.15. It compares decisions, not text. Hybrid retrieval over pgvector with versioned weights (0.60 similarity · 0.25 recency · 0.15 lexical): the cosine top-k comes from the database, the re-ranking lives in code, versioned and tested.
+
+**Industrial quoting platform (CPQ)** · US client · deployed · ~27,000 lines · **216 core tests green** (≈570 checks counting API, MCP channel and browser). The calculation core has no third-party dependency at all. Material imposition does real 2D packing — grid, rotation and guillotine cuts — modelling two different purchasing physics: sheets tested in both orientations, and corrugated from a roll where rotation is forbidden because the flute runs lengthwise. The die-cut vs digital crossover comes out calculated from blade cost, not tabulated. Security is enforced rather than assumed: PostgreSQL row-level security verified at boot, HMAC-signed portal links carrying the tenant so RLS still applies without credentials, payment-webhook signatures verified in constant time over the raw body with an anti-replay window. The RFQ reader is evaluated at a zero-tolerance threshold for invented values; the bilingual interface is WCAG 2.1 AA verified.
+
+**Claim-level verification platform** · Spanish-language journalism · the labeled unit is the atomic verifiable claim, not the article: event → claims → evidence → corroborations → contradictions → provisional conclusion. **383 test functions** (307 unit + 76 end-to-end), a sealed and chained audit trail, separation of duties so an administrator cannot sign off a verdict, and a hardened HTTP client that respects robots.txt and aborts on token budget.
+
+**Real-estate automation backend** · multi-tenant · concurrency, not CRUD: a race condition under bursts of WhatsApp messages resolved with a per-conversation queue — debounce, burst grouping, and a 90-second lease lock claimed atomically in SQL, tested against PostgreSQL 16. Decision logic migrated out of n8n nodes into tested pure functions exposed as endpoints, so the flows could move incrementally. The escalate-to-call guardrails are atomic database rules, not another model deciding.
+
+**Autonomous publishing pipeline** · six agents with per-task model routing (cheap model writes, mid-tier audits, frontier model decides go/no-go), section-level checkpointing so a retry never re-pays for finished work, and a daily spend guardrail. A complete book costs about **$1.10** in API.
+
+**Operating system of a remodeling company** · the quoting agent, the price knowledge base and the hybrid retrieval that now sit underneath the day-to-day work.
+
+---
+
+## How I work
 
 Spec first: a written spec is the artifact, the code is derived from it. Work broken into tasks with a binary check each. Fail-closed over graceful degradation — I'd rather a system stop than quietly guess. And one rule I don't bend: **nothing is claimed before it runs.** If a README says a number, a command reproduces it. When a number turns out to be wrong, it gets retracted in public with a date on it.
 
-### Stack
+## Stack
 
-Python · FastAPI · PostgreSQL · Docker · pytest · GitHub Actions · Claude API & Agent SDK · MCP · RAG (pgvector, hybrid BM25/RRF) · n8n · evals & LLMOps
+Python · FastAPI · PostgreSQL · Docker · pytest · GitHub Actions · Claude API & Agent SDK · MCP · RAG (pgvector, hybrid BM25/RRF) · TypeScript · Redis · n8n · evals & LLMOps
 
 **Open to full-time roles building and testing AI systems — remote.**
 
 Medellín, Colombia · English and Spanish · [brayans7.molina@gmail.com](mailto:brayans7.molina@gmail.com)
-
